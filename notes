@@ -1,0 +1,62 @@
+** Rutas absolutas en Node
+
+Para configurar rutas absolutas con module-alias en node
+
+
+    * Tsconfig.json (ejemplo con los directorios "modules" y "types")
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "src/*": ["*"],
+      "modules": ["/modules/*", "/modules"],
+      "types": ["/types/*", "/types"]
+    }
+  },
+}
+
+    * Package.json
+{
+"_moduleAliases": {
+    "src": "dist",
+    "modules": "dist/modules"
+  },
+  "dependencies": {
+    "module-alias": "2.2.3"
+  },
+}
+
+    * Index.ts (o archivo de punto de entrada)
+// antes de cualquier importacion agregar este import
+// esto resuelve luego los imports como: import users from 'modules/users'
+import 'module-alias/register'
+
+
+
+** Para configurar rutas absolutas en react (vite o similares)
+
+    * Vite.config.ts (o vitest.config.ts para configuracion de tests)
+import { defineConfig } from 'vite/config' // o 'vitest/config' para tests
+import path from 'path'
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      components: path.resolve(__dirname, 'src/components/')
+    },
+  },
+})
+
+    * Tsconfig.json (para resolverlos correctamente en vite deben llevar @ pero se importan sin el, en create-react-app no es necesario el @)
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@components": ["/components/*", "/components"],
+    }
+  }
+}
+
+NOTA: En create-react-app solo es necesario configurar el jsconfig/tsconfig para que funcionen
+
+
